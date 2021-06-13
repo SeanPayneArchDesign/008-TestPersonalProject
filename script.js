@@ -1,5 +1,5 @@
 import * as THREE from 'https://unpkg.com/three@0.119.0/build/three.module.js';
-import { GLTFLoader } from 'https://unpkg.com/three@0.119.0/examples/jsm/loaders/GLTFLoader.js'
+import { OBJLoader } from 'https://unpkg.com/three@0.119.0/examples/jsm/loaders/OBJLoader.js'
 
 let renderer = null;
 let scene = null;
