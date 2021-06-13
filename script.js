@@ -1,5 +1,5 @@
 import * as THREE from 'https://unpkg.com/three@0.119.0/build/three.module.js';
-import { OBJLoader } from 'https://unpkg.com/three@0.119.0/examples/jsm/loaders/OBJLoader.js'
+import { GLTFLoader } from 'https://unpkg.com/three@0.119.0/examples/jsm/loaders/OBJLoader.js'
 
 let renderer = null;
 let scene = null;
@@ -17,11 +17,14 @@ const initScene = (gl, session) => {
 
         // load our gltf model
         var loader = new OBJLoader();
-        loader.load('models/Straight_Leg_Chair.obj', (obj) => {
-                model = obj.scene;
+        loader.load('Models/Straight_Leg_Chair.obj', (obj) => {
+                model = gltf.scene;
                 model.scale.set(0.1, 0.1, 0.1);
                 model.castShadow = true;
                 model.receiveShadow = true;
+                mixer = new THREE.AnimationMixer(model);
+                action = mixer.clipAction(gltf.animations[0]);
+                action.setLoop(THREE.LoopRepeat, 0);
         },
         () => { },
         (error) => console.error(error)
@@ -162,14 +165,33 @@ function placeObject() {
         xrHitTestSource = null;
         // we'll be placing our object right where the reticle was
         const pos = reticle.getWorldPosition();
-        //scene.remove(reticle); //< removes reticle
+        scene.remove(reticle);
         model.position.set(pos.x, pos.y, pos.z);
         scene.add(model);
 
         // start object animation right away
+        toggleAnimation();
         // instead of placing an object we will just toggle animation state
-        //document.getElementById("overlay").removeEventListener('click', placeObject);
-        //document.getElementById("overlay").addEventListener('click', toggleAnimation);
+        document.getElementById("overlay").removeEventListener('click', placeObject);
+        document.getElementById("overlay").addEventListener('click', toggleAnimation);
+        }
+}
+
+function toggleAnimation() {
+        if (action.isRunning()) {
+        action.stop();
+        action.reset();
+        } else {
+        action.play();
+        }
+}
+
+// Utility function to update animated objects
+function updateAnimation() {
+        let dt = (Date.now() - lastFrame) / 1000;
+        lastFrame = Date.now();
+        if (mixer) {
+        mixer.update(dt);
         }
 }
 
@@ -192,6 +214,8 @@ function onXRFrame(t, frame) {
         reticle.visible = false;
         }
 
+        // update object animation
+        updateAnimation();
         // bind our gl context that was created with WebXR to threejs renderer
         gl.bindFramebuffer(gl.FRAMEBUFFER, session.renderState.baseLayer.framebuffer);
         // render the scene
