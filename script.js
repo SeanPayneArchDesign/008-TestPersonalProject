@@ -1,5 +1,5 @@
 import * as THREE from 'https://unpkg.com/three@0.119.0/build/three.module.js';
-import { GLTFLoader } from 'https://unpkg.com/three@0.119.0/examples/jsm/loaders/OBJLoader.js'
+import { GLTFLoader } from 'https://unpkg.com/three@0.119.0/examples/jsm/loaders/GLTFLoader.js'
 
 let renderer = null;
 let scene = null;
@@ -16,8 +16,8 @@ const initScene = (gl, session) => {
         camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
         // load our gltf model
-        var loader = new OBJLoader();
-        loader.load('Models/Straight_Leg_Chair.obj', (obj) => {
+        var loader = new GLTFLoader();
+        loader.load('models/wheel.glb', (gltf) => {
                 model = gltf.scene;
                 model.scale.set(0.1, 0.1, 0.1);
                 model.castShadow = true;
