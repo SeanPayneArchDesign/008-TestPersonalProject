@@ -192,8 +192,6 @@ function onXRFrame(t, frame) {
         reticle.visible = false;
         }
 
-        // update object animation
-        updateAnimation();
         // bind our gl context that was created with WebXR to threejs renderer
         gl.bindFramebuffer(gl.FRAMEBUFFER, session.renderState.baseLayer.framebuffer);
         // render the scene
