@@ -16,15 +16,12 @@ const initScene = (gl, session) => {
         camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
         // load our gltf model
-        var loader = new GLTFLoader();
-        loader.load('models/wheel.glb', (gltf) => {
-                model = gltf.scene;
+        var loader = new OBJLoader();
+        loader.load('models/Straight_Leg_Chair.obj', (obj) => {
+                model = obj.scene;
                 model.scale.set(0.1, 0.1, 0.1);
                 model.castShadow = true;
                 model.receiveShadow = true;
-                mixer = new THREE.AnimationMixer(model);
-                action = mixer.clipAction(gltf.animations[0]);
-                action.setLoop(THREE.LoopRepeat, 0);
         },
         () => { },
         (error) => console.error(error)
@@ -165,33 +162,14 @@ function placeObject() {
         xrHitTestSource = null;
         // we'll be placing our object right where the reticle was
         const pos = reticle.getWorldPosition();
-        scene.remove(reticle);
+        //scene.remove(reticle); //< removes reticle
         model.position.set(pos.x, pos.y, pos.z);
         scene.add(model);
 
         // start object animation right away
-        toggleAnimation();
         // instead of placing an object we will just toggle animation state
-        document.getElementById("overlay").removeEventListener('click', placeObject);
-        document.getElementById("overlay").addEventListener('click', toggleAnimation);
-        }
-}
-
-function toggleAnimation() {
-        if (action.isRunning()) {
-        action.stop();
-        action.reset();
-        } else {
-        action.play();
-        }
-}
-
-// Utility function to update animated objects
-function updateAnimation() {
-        let dt = (Date.now() - lastFrame) / 1000;
-        lastFrame = Date.now();
-        if (mixer) {
-        mixer.update(dt);
+        //document.getElementById("overlay").removeEventListener('click', placeObject);
+        //document.getElementById("overlay").addEventListener('click', toggleAnimation);
         }
 }
 
